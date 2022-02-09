@@ -8,9 +8,9 @@ services:
     environment:
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_DB=$DB_DATABASE
     ports:
-      - "${DB_PORT}:5432"
+      - "$DB_PORT:5432"
     volumes:
       - $HOME/.docker-volumes/hotel/postgres:/var/lib/postgresql/data
 
@@ -25,4 +25,4 @@ services:
       - .:/code
     ports:
       - 8000:8000
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    entrypoint: /bin/sh -c ./entrypoint.sh

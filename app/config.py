@@ -5,8 +5,8 @@ from pydantic import BaseSettings
 
 class DBSettings(BaseSettings):
     user: str
+    database: str
     password: str
-    name: str
     host: str
     port: str
 
@@ -17,4 +17,4 @@ class DBSettings(BaseSettings):
 
 @lru_cache()
 def get_db_settings() -> DBSettings:
-        return DBSettings()
+    return DBSettings()

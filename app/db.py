@@ -1,15 +1,12 @@
-import sqlalchemy
+import databases
 
 from .config import get_db_settings
 
+
 settings = get_db_settings()
 
-DATABASE_URL = f"postgresql://{settings.username}:\
+DATABASE_URL = f"postgresql://{settings.user}:\
 {settings.password}@{settings.host}:${settings.port}/{settings.database}"
 
-
-engine = sqlalchemy.create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
-
+database = databases.Database(DATABASE_URL)
 
