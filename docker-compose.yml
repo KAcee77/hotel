@@ -4,23 +4,20 @@ services:
 
   db:
     container_name: hotel-db
-    image: postgres:12-alpine
+    image:  postgres:12-alpine
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
       - POSTGRES_DB=$DB_DATABASE
     ports:
-      - "$DB_PORT:5432"
+      - $DB_PORT:5432
     volumes:
       - $HOME/.docker-volumes/hotel/postgres:/var/lib/postgresql/data
 
   app:
     build: .
     container_name: hotel-app
-    links:
-      - db
-    depends_on:
-      - db
     volumes:
       - .:/code
     ports:

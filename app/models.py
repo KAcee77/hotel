@@ -1,58 +1,43 @@
 import enum
+import uuid as uuid_pkg
+from datetime import datetime
 
-from sqlalchemy import (DECIMAL, Column, DateTime, Enum, ForeignKey, Integer,
-                        MetaData, String, Table, text)
-from sqlalchemy.dialects.postgresql import UUID
+from pydantic import condecimal
+from sqlmodel import Field, SQLModel
 
-metadata = MetaData()
 
-class RoleEnum(enum.Enum):
+class RoleEnum(str, enum.Enum):
     admin = 'admin'
     manager = 'manager'
 
 
-users = Table(
-    'users',
-    metadata,
-    Column('id', Integer, primary_key=True),
-    Column('name', String(100), nullable=False),
-    Column("hashed_password", String()),
-    Column('role', Enum(RoleEnum))
-)
+class User(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    name: str
+    hashed_password: str
+    role: RoleEnum
 
 
-tokens = Table(
-    "tokens",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column(
-        "token",
-        UUID(as_uuid=False),
-        server_default=text("uuid_generate_v4()"),
-        unique=True,
-        nullable=False,
-        index=True,
-    ),
-    Column("expires", DateTime()),
-    Column("user_id", ForeignKey("users.id")),
-)
+class Token(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    expires: datetime
+    uuid: uuid_pkg.UUID = Field(
+        default_factory=uuid_pkg.uuid4,
+        index=True
+    )
+    user_id: int = Field(foreign_key='user.id')
 
 
-rooms = Table(
-    'rooms',
-    metadata,
-    Column('id', Integer, primary_key=True),
-    Column('number', Integer, nullable=False),
-    Column('price', DECIMAL(7,2), nullable=False),
-    Column('number_of_seats', Integer, nullable=False)
-)
+class Room(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    number: int
+    price: condecimal(max_digits=7, decimal_places=2)
+    number_of_seats: int
 
 
-bookings = Table(
-    'bookings', 
-    metadata,
-    Column('id', Integer, primary_key=True),
-    Column('from', DateTime(), nullable=False),
-    Column('to', DateTime(), nullable=False),
-    Column('room_id', ForeignKey('rooms.id'), nullable=False)
-)
+class Booking(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    start: datetime
+    end: datetime
+    room_id: int = Field(foreign_key='room.id')
+
