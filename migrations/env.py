@@ -3,7 +3,7 @@ from logging.config import fileConfig
 from os import environ
 
 from alembic import context
-from app.models import Booking, Room, Token, User
+from app.models import Room, User
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -22,7 +22,6 @@ config.set_section_option(section, "DB_PASSWORD", environ.get("DB_PASSWORD"))
 config.set_section_option(section, "DB_DATABASE", environ.get("DB_DATABASE"))
 config.set_section_option(section, "DB_HOST", environ.get("DB_HOST"))
 config.set_section_option(section, "DB_PORT", environ.get("DB_PORT"))
-
 
 fileConfig(config.config_file_name)
 
